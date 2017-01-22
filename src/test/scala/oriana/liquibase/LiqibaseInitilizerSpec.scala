@@ -1,14 +1,20 @@
 package oriana.liquibase
 
-import akka.actor.{ActorSystem, PoisonPill}
+import java.io.InputStream
+import java.util
+
+import scala.collection.JavaConverters._
+
+import akka.actor.ActorSystem
 import akka.util.Timeout
+import org.scalatest.concurrent.PatienceConfiguration.{Timeout => TestTimeout}
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{Minute, Span}
 import org.scalatest.{BeforeAndAfterAll, FlatSpec, Matchers}
 import oriana._
-import org.scalatest.concurrent.PatienceConfiguration.{Timeout => TestTimeout}
-import org.scalatest.time.{Minute, Span}
 
 import scala.concurrent.duration._
+import _root_.liquibase.resource.{ResourceAccessor, ClassLoaderResourceAccessor}
 
 class LiqibaseInitilizerSpec extends FlatSpec with Matchers with BeforeAndAfterAll with ScalaFutures {
   implicit val actorSystem = ActorSystem("test")
@@ -39,13 +45,21 @@ class LiqibaseInitilizerSpec extends FlatSpec with Matchers with BeforeAndAfterA
   }
 
   it should "be able to upgrade a db version" in {
-    val db0 = actorSystem.actorOf(DatabaseActor.props(new TestContext with DatabaseCommandExecution), "testdb2")
+    val db0 = actorSystem.actorOf(DatabaseActor.props(new TestContext("abc") with DatabaseCommandExecution), "testdb2")
     db0 ! new LiquibaseInitializer()
     db0 ! NoRetrySchedule
     db0 ! DatabaseActor.Init
 
-    val db1 = actorSystem.actorOf(DatabaseActor.props(new TestContext with DatabaseCommandExecution), "testdb3")
-    db1 ! new LiquibaseInitializer("db-changelog-2.xml")
+    Thread.sleep(5.seconds.toMillis)
+
+    val db1 = actorSystem.actorOf(DatabaseActor.props(new ExtTestContext("abc") with DatabaseCommandExecution), "testdb3")
+    implicit val dbName = DatabaseName(db1.path)
+    db1 ! new LiquibaseInitializer() {
+
+      override protected def resourceAccessor: ResourceAccessor = new ClassLoaderResourceAccessor(getClass.getClassLoader) {
+        override def getResourcesAsStream(path: String): util.Set[InputStream] = super.getResourcesAsStream(if (path == "db-changelog.xml") "db-changelog-2.xml" else path)
+      }
+    }
     db1 ! NoRetrySchedule
     db1 ! DatabaseActor.Init
 
