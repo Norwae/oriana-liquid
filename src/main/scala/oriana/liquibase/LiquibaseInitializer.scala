@@ -11,8 +11,6 @@ import oriana.{DatabaseCommandExecution, DatabaseContext}
 import scala.concurrent.{ExecutionContext, Future}
 
 class LiquibaseInitializer(resourceName: String = "db-changelog.xml")(implicit ec: ExecutionContext) extends oriana.DBInitializer[DatabaseContext with DatabaseCommandExecution] {
-  private val logger = LoggerFactory.getLogger(classOf[LiquibaseInitializer])
-
   override def apply(ctx: DatabaseContext with DatabaseCommandExecution): Future[InitComplete.type] = {
     LogFactory.setInstance(SLF4JLoggingBridge)
 
