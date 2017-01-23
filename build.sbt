@@ -34,4 +34,4 @@ pomExtra :=
       <name>Stefan Schulz</name>
       <email>schulz.stefan@gmail.com</email>
     </developer>
-  </developers>, <url>https://github.com/norwae/oriana</url>)
+  </developers>, <url>https://github.com/norwae/oriana-liquid</url>)
