@@ -4,7 +4,7 @@ organization := "com.github.norwae"
 
 description := "oriana-liquid provides a liquibase-supported upgrader for schema creation and evolution"
 
-version := "1.0.0-SNAPSHOT"
+version := "1.0.0"
 
 scalaVersion := "2.11.8"
 
