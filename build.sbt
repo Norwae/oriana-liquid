@@ -4,19 +4,24 @@ organization := "com.github.norwae"
 
 description := "oriana-liquid provides a liquibase-supported upgrader for schema creation and evolution"
 
-version := "1.0.0"
+version := "1.1.0-SNAPSHOT"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.1"
+
+crossScalaVersions := Seq("2.11.8")
 
 publishMavenStyle := true
 
+resolvers +=
+  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+
 libraryDependencies ++= {
   Seq(
-    "com.github.norwae" %% "oriana" % "1.0.1",
+    "com.github.norwae" %% "oriana" % "1.1.0",
     "org.liquibase" % "liquibase-core" % "3.5.3",
 
-    "com.h2database" % "h2" % "1.4.191" % "test",
-    "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+    "org.scalatest" %% "scalatest" % "3.0.1" % "test",
+    "com.h2database" % "h2" % "1.4.191" % "test"
   )
 }
 
