@@ -6,7 +6,7 @@ import liquibase.servicelocator.PrioritizedService
 import org.slf4j.LoggerFactory
 
 class SLF4JLogAdapter(name: String) extends Logger {
-  val backing = LoggerFactory.getLogger(name)
+  private val backing = LoggerFactory.getLogger(name)
 
   override def severe(message: String) = backing.error(message)
 
@@ -22,13 +22,13 @@ class SLF4JLogAdapter(name: String) extends Logger {
 
   override def getLogLevel = LogLevel.DEBUG
 
-  override def setChangeSet(changeSet: ChangeSet) = backing.info(s"Now processing $changeSet")
+  override def setChangeSet(changeSet: ChangeSet) = if (changeSet != null) backing.info(s"Now processing $changeSet")
 
   override def closeLogFile() = ()
 
   override def setName(name: String) = ()
 
-  override def setChangeLog(databaseChangeLog: DatabaseChangeLog) = backing.info(s"Now procesing $databaseChangeLog")
+  override def setChangeLog(databaseChangeLog: DatabaseChangeLog) = if (databaseChangeLog != null) backing.info(s"Now procesing $databaseChangeLog")
 
   override def info(message: String) = backing.info(message)
 
