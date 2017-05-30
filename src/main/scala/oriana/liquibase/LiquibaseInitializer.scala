@@ -30,6 +30,9 @@ class LiquibaseInitializer(resourceName: String = "db-changelog.xml")(implicit e
     }
   }
 
+  @deprecated("use parametrized method", "1.1.0")
+  protected def resourceAccessor = new ClassLoaderResourceAccessor(getClass.getClassLoader)
+
   protected def resourceAccessor(originContext: ExecutableDatabaseContext): ResourceAccessor =
     new ClassLoaderResourceAccessor(getClass.getClassLoader) with SlickContextResourceAccessor{
       override def context: ExecutableDatabaseContext = originContext
